@@ -5,5 +5,8 @@
     "vendor": "",
     "aliases": [],
     "prefix": "SXHMREP",
-    "url": "https://github.com/styletronix/SymconHMRepeat"
+    "url": "https://github.com/styletronix/SymconHMRepeat",
+	"parentRequirements": [],
+    "childRequirements": [],
+    "implemented": []
 }
