@@ -1,5 +1,6 @@
-# SymconHMRepeat
+# HMRepeat
 
-Under Construction
+Folgende Module beinhaltet das HMRepeat Repository:
 
-Do Not use!
+- __HMRepeat__ ([Dokumentation](HMRepeat))  
+	Kurze Beschreibung des Moduls.
