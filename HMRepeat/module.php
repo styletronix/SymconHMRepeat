@@ -8,9 +8,7 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::Create();
 
-			//$this->ConnectParent('{6179ED6A-FC31-413C-BB8E-1204150CF376}');
-			$this->ConnectParent('{EE4A81C6-5C90-4DB7-AD2F-F6BBD521412E}');
-			
+			$this->RegisterMessage(47629, 20000);
 		}
 
 		public function Destroy()
@@ -24,6 +22,11 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::ApplyChanges();
 		}
+
+public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+ 
+	IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+}
 
 		public function ForwardData($JSONString)
 		{
