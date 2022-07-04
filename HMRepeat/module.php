@@ -170,7 +170,7 @@ declare(strict_types=1);
 			}
 
 			if ($prop["UpdateOnChangeOnly"] === true){
-				if ($val == GetValue($Variable)){
+				if ($Value == GetValue($Variable)){
 					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
 				}
