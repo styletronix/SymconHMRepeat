@@ -61,7 +61,7 @@ declare(strict_types=1);
 				$arr = $this->GetListItems("repeatingVariables");
 				if ($arr){
 					foreach($arr as $key1) {
-						$key1["InstanceID"]
+						//$key1["InstanceID"]
 					}
 				}	
 			}
