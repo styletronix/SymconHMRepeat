@@ -3,15 +3,13 @@
 declare(strict_types=1);
 	class HMRepeat extends IPSModule
 	{
-		private int $ActionScriptID;
-
 		public function Create()
 			{
 				parent::Create();
 
 				$this->RegisterPropertyString("repeatingVariables", "");
 
-				$this->ActionScriptID = $this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(" . $this->InstanceID . ", \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+				$this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
 			}
 
 		public function Destroy()
@@ -121,16 +119,19 @@ declare(strict_types=1);
 				$this->LogMessage("Für Variable {$_IPS['VARIABLE']} wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", KL_WARNING);
 				return; 
 			}
-			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $this->ActionScriptID) { 
+
+			$ActionScriptID = $this->GetIDForIdent("ActionScript");
+
+			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $ActionScriptID) { 
 				$this->LogMessage("Variable {$_IPS['VARIABLE']} hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", KL_WARNING);
 				return; 
 			}
 
 			$this->RegisterReference($ID);
 
-			if ($Variable["VariableCustomAction"] == $this->ActionScriptID){ return; }
+			if ($Variable["VariableCustomAction"] == $ActionScriptID){ return; }
 			
-			IPS_SetVariableCustomAction($ID, $this->ActionScriptID);
+			IPS_SetVariableCustomAction($ID, $ActionScriptID);
 			$this->LogMessage("Variable {$_IPS['VARIABLE']} wurde hinzugefügt.", KL_MESSAGE);
 
 			// $this->UnregisterReference(12345);
