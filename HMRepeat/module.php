@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 				$this->RegisterPropertyString("repeatingVariables", "");
 
-				$this->ActionScriptID = $this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(".$this->InstanceID.", $_IPS['VARIABLE'], $_IPS['VALUE']); \n\n?>");
+				$this->ActionScriptID = $this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(" . $this->InstanceID . ", \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
 			}
 
 		public function Destroy()
