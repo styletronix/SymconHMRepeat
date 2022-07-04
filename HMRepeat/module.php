@@ -118,18 +118,18 @@ declare(strict_types=1);
 			$Variable = IPS_GetVariable($ID);
 			if ($Variable == null){ return; }
 			if ($Variable["VariableAction"] == 0){
-				$this->LogMessage("Für Variable " . $_IPS['VARIABLE'] . " existiert keine Standardaktion. Sie wird daher nicht verwendet.", KL_WARNING);
+				$this->LogMessage("Für Variable " . $ID . " existiert keine Standardaktion. Sie wird daher nicht verwendet.", KL_WARNING);
 				return; 
 			}
 			if ($Variable["VariableCustomAction"] == 1 or $Variable["VariableCustomAction"] == 2300) {
-				$this->LogMessage("Für Variable " . $_IPS['VARIABLE'] . " wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", KL_WARNING);
+				$this->LogMessage("Für Variable " . $ID . " wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", KL_WARNING);
 				return; 
 			}
 
 			$ActionScriptID = $this->GetIDForIdent("ActionScript");
 
 			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $ActionScriptID) { 
-				$this->LogMessage("Variable " . $_IPS['VARIABLE'] . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", KL_WARNING);
+				$this->LogMessage("Variable " . $ID . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", KL_WARNING);
 				return; 
 			}
 
@@ -138,7 +138,7 @@ declare(strict_types=1);
 			if ($Variable["VariableCustomAction"] == $ActionScriptID){ return; }
 			
 			IPS_SetVariableCustomAction($ID, $ActionScriptID);
-			$this->LogMessage("Variable " . $_IPS['VARIABLE'] . " wurde hinzugefügt.", KL_MESSAGE);
+			$this->LogMessage("Variable " . $ID . " wurde hinzugefügt.", KL_MESSAGE);
 
 			// $this->UnregisterReference(12345);
 			// $ReferenceList = $this->GetReferenceList();
@@ -158,20 +158,20 @@ declare(strict_types=1);
 		public function RequestExternalAction($Variable, $Value) {
 			$prop = GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
-				$this->LogMessage("Für Variable " . $_IPS['VARIABLE'] . " konnte keine Einstellung gefunden werden.", KL_WARNING);
+				$this->LogMessage("Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", KL_WARNING);
 				return false;
 			}
 
 			$Object = IPS_GetObject($Variable);
 
 			if ($Object['ObjectType'] !== 2){
-				$this->LogMessage("Objekt ID " . $_IPS['VARIABLE'] . " ist keine Variable", KL_WARNING);
+				$this->LogMessage("Objekt ID " . $ID . " ist keine Variable", KL_WARNING);
 				return false;
 			}
 
 			if ($prop["UpdateOnChangeOnly"] === true){
 				if ($val == GetValue($Variable)){
-					$this->LogMessage("Variable " . $_IPS['VARIABLE'] . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
+					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
 				}
 			}
