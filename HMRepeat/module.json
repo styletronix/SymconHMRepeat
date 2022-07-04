@@ -1,12 +1,12 @@
 {
-    "id": "{DF8F3277-639F-8CDC-17B4-8464303E195C}",
-    "name": "Command Repeat",
-    "type": 3,
-    "vendor": "",
+  "id": "{DF8F3277-639F-8CDC-17B4-8464303E195C}",
+  "name": "HMRepeat",
+  "type": 3,
+  "vendor": "",
   "aliases": [ "HMRepeat" ],
-    "prefix": "SXHMREP",
-    "url": "https://github.com/styletronix/SymconHMRepeat",
-	"parentRequirements": [],
-    "childRequirements": [],
-    "implemented": []
+  "prefix": "SXHMREP",
+  "url": "https://github.com/styletronix/SymconHMRepeat",
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": []
 }
