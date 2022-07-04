@@ -156,7 +156,7 @@ declare(strict_types=1);
 		}
 
 		public function RequestExternalAction($Variable, $Value) {
-			$prop = GetRepeatingVariableTreeUp($Variable);
+			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
 				$this->LogMessage("Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", KL_WARNING);
 				return false;
