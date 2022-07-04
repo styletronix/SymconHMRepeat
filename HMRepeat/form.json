@@ -4,17 +4,16 @@
       "type": "List",
       "name": "repeatingVariables",
       "caption": "Repeat Variables",
-      "rowCount": 5,
       "add": true,
       "delete": true,
       "columns": [
         {
-          "caption": "Variable",
+          "caption": "Object",
           "name": "InstanceID",
           "width": "auto",
           "add": 0,
           "edit": {
-            "type": "SelectVariable"
+            "type": "SelectObject"
           }
         },
         {
