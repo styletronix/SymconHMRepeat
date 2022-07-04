@@ -21,6 +21,7 @@
           "caption": "Update if changed only",
           "name": "UpdateOnChangeOnly",
           "width": "150px",
+          "add":  true,
           "edit": {
             "caption": "Update if changed only",
             "type": "CheckBox"
