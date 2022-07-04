@@ -57,7 +57,7 @@ declare(strict_types=1);
 				return null;
 		}
 		private function GetRepeatingVariable($objID){
-			$arr = GetListItems("repeatingVariables");
+			$arr = $this->GetListItems("repeatingVariables");
 			if ($arr){
 				foreach($arr as $key1) {
 					if ($objID == $key1["InstanceID"]){
@@ -69,14 +69,14 @@ declare(strict_types=1);
 			return null;
 		}
 		private function GetRepeatingVariableTreeUp($objID){
-			$arr = GetRepeatingVariable($objID);
+			$arr = $this->GetRepeatingVariable($objID);
 			
 			if ($arr){
 				return $arr;
 			}else{
 				$parent = IPS_GetParent($objID);
 				if ($parent > 0){
-					return GetRepeatingVariableTreeUp($parent);
+					return $this->GetRepeatingVariableTreeUp($parent);
 				}
 			}
 							
