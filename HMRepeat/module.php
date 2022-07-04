@@ -89,7 +89,9 @@ declare(strict_types=1);
 				if ($arr){
 					foreach($arr as $key1) {
 						$objID = $key1["InstanceID"];
-						$this->UpdateVariablesRecursive([$objID]);
+						if ($objID > 0){
+							$this->UpdateVariablesRecursive([$objID]);
+						}
 					}
 				}	
 			}
