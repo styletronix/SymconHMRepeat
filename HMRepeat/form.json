@@ -1,5 +1,35 @@
 {
-    "elements": [],
+  "elements": [
+    {
+      "type": "List",
+      "name": "repeatingVariables",
+      "caption": "Repeat Variables",
+      "rowCount": 5,
+      "add": true,
+      "delete": true,
+      "columns": [
+        {
+          "caption": "Variable",
+          "name": "InstanceID",
+          "width": "auto",
+          "add": 0,
+          "edit": {
+            "type": "SelectVariable"
+          }
+        },
+        {
+          "caption": "Update if changed only",
+          "name": "UpdateOnChangeOnly",
+          "width": "150px",
+          "add": false,
+          "edit": {
+            "caption": "Update if changed only",
+            "type": "CheckBox"
+          }
+        }
+      ]
+    }
+  ],
     "actions": [],
     "status": []
 }

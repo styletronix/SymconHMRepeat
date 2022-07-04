@@ -1,8 +1,9 @@
 {
     "translations": {
-        "de": {
-            "Translation 1": "Übersetzung 1",
-            "Translation 2": "Übersetzung 2"
-        }
+      "de": {
+        "Command Repeat": "Befehle wiederholen",
+        "Repeat Variables": "Variablen zur Wiederholung",
+        "Update if changed only": "Nur bei Änderung aktualisieren"
+      }
     }
 }
