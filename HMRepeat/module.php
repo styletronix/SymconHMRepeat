@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) 
 			{
-				IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+				$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true), 0);
 			}
 
 		public function ForwardData($JSONString)
@@ -118,18 +118,18 @@ declare(strict_types=1);
 			$Variable = IPS_GetVariable($ID);
 			if ($Variable == null){ return; }
 			if ($Variable["VariableAction"] == 0){
-				$this->LogMessage("Für Variable " . $ID . " existiert keine Standardaktion. Sie wird daher nicht verwendet.", KL_WARNING);
+				$this->SendDebug("UpdateVariable", "Für Variable " . $ID . " existiert keine Standardaktion. Sie wird daher nicht verwendet.", 0);
 				return; 
 			}
 			if ($Variable["VariableCustomAction"] == 1 or $Variable["VariableCustomAction"] == 2300) {
-				$this->LogMessage("Für Variable " . $ID . " wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", KL_WARNING);
+				$this->SendDebug("UpdateVariable", "Für Variable " . $ID . " wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", 0);
 				return; 
 			}
 
 			$ActionScriptID = $this->GetIDForIdent("ActionScript");
 
 			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $ActionScriptID) { 
-				$this->LogMessage("Variable " . $ID . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", KL_WARNING);
+				$this->SendDebug("UpdateVariable", "Variable " . $ID . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", 0);
 				return; 
 			}
 
@@ -138,7 +138,7 @@ declare(strict_types=1);
 			if ($Variable["VariableCustomAction"] == $ActionScriptID){ return; }
 			
 			IPS_SetVariableCustomAction($ID, $ActionScriptID);
-			$this->LogMessage("Variable " . $ID . " wurde hinzugefügt.", KL_MESSAGE);
+			$this->SendDebug("UpdateVariable", "Variable " . $ID . " wurde hinzugefügt.", 0);
 
 			// $this->UnregisterReference(12345);
 			// $ReferenceList = $this->GetReferenceList();
@@ -158,6 +158,7 @@ declare(strict_types=1);
 		public function RequestExternalAction($Variable, $Value) {
 			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
+				$this->SendDebug("RequestExternalAction", "Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", 0);
 				$this->LogMessage("Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", KL_WARNING);
 				return false;
 			}
@@ -165,18 +166,29 @@ declare(strict_types=1);
 			$Object = IPS_GetObject($Variable);
 
 			if ($Object['ObjectType'] !== 2){
+				$this->SendDebug("RequestExternalAction", "Objekt ID " . $ID . " ist keine Variable", 0);
 				$this->LogMessage("Objekt ID " . $ID . " ist keine Variable", KL_WARNING);
 				return false;
 			}
 
 			if ($prop["UpdateOnChangeOnly"] === true){
 				if ($Value == GetValue($Variable)){
+					$this->SendDebug("RequestExternalAction", "Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", 0);
 					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
 				}
 			}
 
 			$VariableObject = IPS_GetVariable($Variable);
-			return IPS_RequestAction($VariableObject['VariableAction'], $Object['ObjectIdent'], $Value);
+
+			try{
+				$result =  IPS_RequestAction($VariableObject['VariableAction'], $Object['ObjectIdent'], $Value);
+			} catch (Exception $e) {
+				$result = false;
+			}
+
+
+
+			return $result;
 		}
 	}
