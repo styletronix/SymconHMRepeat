@@ -5,30 +5,27 @@ declare(strict_types=1);
 	{
 		public function Create()
 		{
-			//Never delete this line!
 			parent::Create();
 
-			$this->RegisterMessage(47629, 20000);
+
 		}
 
-		public function Destroy()
+	public function Destroy()
 		{
-			//Never delete this line!
 			parent::Destroy();
 		}
 
-		public function ApplyChanges()
+	public function ApplyChanges()
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
 		}
 
-public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
- 
-	IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
-}
+	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+		IPS_LogMessage("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+	}
 
-		public function ForwardData($JSONString)
+	public function ForwardData($JSONString)
 		{
 			$data = json_decode($JSONString);
 			IPS_LogMessage('Splitter FRWD', utf8_decode($data->Buffer));
@@ -38,7 +35,7 @@ public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
 			return 'String data for device instance!';
 		}
 
-		public function ReceiveData($JSONString)
+	public function ReceiveData($JSONString)
 		{
 			$data = json_decode($JSONString);
 			IPS_LogMessage('Splitter RECV', utf8_decode($data->Buffer));
