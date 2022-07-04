@@ -115,6 +115,10 @@ declare(strict_types=1);
 		private function UpdateVariable($ID){
 			$Variable = IPS_GetVariable($ID);
 			if ($Variable == null){ return; }
+			if ($Variable["VariableAction"] == 0){
+				$this->LogMessage("Für Variable " . $_IPS['VARIABLE'] . " existiert keine Standardaktion. Sie wird daher nicht verwendet.", KL_WARNING);
+				return; 
+			}
 			if ($Variable["VariableCustomAction"] == 1 or $Variable["VariableCustomAction"] == 2300) {
 				$this->LogMessage("Für Variable " . $_IPS['VARIABLE'] . " wurde die Standardaktion deaktiviert. Sie wird daher nicht verwendet.", KL_WARNING);
 				return; 
