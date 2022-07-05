@@ -164,10 +164,12 @@ declare(strict_types=1);
 		}
 
 		private function GetRepeatingStatusItem($id){
+			$key = "ID".$id;
 			$status = $this->GetRepeatingStatus();
-			$item = $status["ID" . $id];
 
-			if ($item === null){
+			if (array_key_exists($key,$status)){
+				$item = $status[$key];
+			}else{
 				$item = array(
 					"ID" => $id,
 					"RepeatCount" => 0,
@@ -183,16 +185,16 @@ declare(strict_types=1);
 			$this->SendDebug("AddOrUpdateFailure", $item);
 
 			$status = $this->GetRepeatingStatus();
-			$status[ "ID" . $item["ID"]] = $item;
+			$status["ID".$item["ID"]] = $item;
 			$this->SetRepeatingStatus($status);
 		}
 		private function RemoveFailure($id){
 			$status = $this->GetRepeatingStatus();
 
-			if ($status[ "ID" . $id]){
+			if (array_key_exists("ID".$id,$status)){
 				$this->SendDebug("RemoveFailure", $id);
 
-				unset($status[ "ID" . $id]);
+				unset($status["ID".$id]);
 				$this->SetRepeatingStatus($status);
 			}
 		}
