@@ -48,6 +48,16 @@ declare(strict_types=1);
 				parent::Destroy();
 			}
 
+		public function RestoreActionScript($ActionScriptID){
+			$IDs = IPS_GetVariableList();
+				foreach($IDs as $ID) {
+					$var = IPS_GetVariable($ID);
+					if ($var["VariableCustomAction"] === $ActionScriptID)){
+						IPS_SetVariableCustomAction($ID,0);
+						// TODO: Restore old CustomAction
+					}
+				}
+		}
 		public function ApplyChanges()
 			{
 				parent::ApplyChanges();
@@ -71,7 +81,9 @@ declare(strict_types=1);
 					case VM_DELETE:
 					case IM_DELETE:
 						if($SenderID == $this->InstanceID){
-							$this->SendDebug("MessageSink", $_IPS['SELF'], 0);
+							foreach($Data as $ID) {
+								$this->RestoreActionScript($ID);
+							}
 						}
 						break;
 				}
