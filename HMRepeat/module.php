@@ -38,7 +38,7 @@ declare(strict_types=1);
 			foreach($IDs as $ID) {
 				$var = IPS_GetVariable($ID);
 				if (in_array($var["VariableCustomAction"],$scriptList)){
-					$this->SendDebug("RestoreActionScript", $var);
+					$this->SendDebug("RestoreActionScript", $var, 0);
 					IPS_SetVariableCustomAction($ID,0);
 					// TODO: Restore old CustomAction
 				}
@@ -88,7 +88,7 @@ declare(strict_types=1);
 			return array();
 		}
 		private function SetRepeatingStatus($data){
-			$this->SendDebug("SetRepeatingStatus", $data);
+			$this->SendDebug("SetRepeatingStatus", $data, 0);
 
 			$jsonString = json_encode($data);
 			$this->WriteAttributeString("repeatingStatus", $jsonString);
@@ -245,7 +245,7 @@ declare(strict_types=1);
 		}
 
 		private function AddOrUpdateFailure($item){
-			$this->SendDebug("AddOrUpdateFailure", $item);
+			$this->SendDebug("AddOrUpdateFailure", $item, 0);
 
 			$status = $this->GetRepeatingStatus();
 			$status["ID".$item["ID"]] = $item;
@@ -255,7 +255,7 @@ declare(strict_types=1);
 			$status = $this->GetRepeatingStatus();
 
 			if (array_key_exists("ID".$id,$status)){
-				$this->SendDebug("RemoveFailure", $id);
+				$this->SendDebug("RemoveFailure", $id, 0);
 
 				unset($status["ID".$id]);
 				$this->SetRepeatingStatus($status);
