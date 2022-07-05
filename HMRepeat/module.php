@@ -156,7 +156,7 @@ declare(strict_types=1);
 		}
 
 		private function UpdateIterval(){
-			$status = $this->GetRepeatingStatus()
+			$status = $this->GetRepeatingStatus();
 			foreach($status as $item) {
 
 			
