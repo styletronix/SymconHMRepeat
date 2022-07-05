@@ -37,9 +37,9 @@ declare(strict_types=1);
 			$IDs = IPS_GetVariableList();
 			foreach($IDs as $ID) {
 				$var = IPS_GetVariable($ID);
-				if (in_array($var["VariableCustomAction"],$scriptList)){
-					$this->SendDebug("RestoreActionScript", $var, 0);
+				if (in_array($var["VariableCustomAction"],$scriptList)){				
 					IPS_SetVariableCustomAction($ID,0);
+					$this->SendDebug("RestoreActionScript", "CustomAction wurde für Variable " . $ID . " zurückgesetzt", 0);
 					// TODO: Restore old CustomAction
 				}
 			}
@@ -245,7 +245,7 @@ declare(strict_types=1);
 		}
 
 		private function AddOrUpdateFailure($item){
-			$this->SendDebug("AddOrUpdateFailure", $item, 0);
+			$this->SendDebug("AddOrUpdateFailure", json_encode($item), 0);
 
 			$status = $this->GetRepeatingStatus();
 			$status["ID".$item["ID"]] = $item;
