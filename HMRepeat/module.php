@@ -293,7 +293,7 @@ declare(strict_types=1);
 		public function RequestExternalActionString(int $Variable, string $Value) {
 			$this->RequestExternalAction($Variable, $Value);
 		}
-		public function RequestExternalAction(int $Variable, var $Value) {
+		public function RequestExternalAction($Variable,$Value) {
 			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
 				$this->SendDebug("RequestExternalAction", "Für Variable " . $Variable . " konnte keine Einstellung gefunden werden.", 0);
