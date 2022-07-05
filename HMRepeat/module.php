@@ -36,7 +36,7 @@ declare(strict_types=1);
 				$IDs = IPS_GetVariableList();
 				foreach($IDs as $ID) {
 					$var = IPS_GetVariable($ID);
-					if ($var["VariableCustomAction"] === $ActionScriptID)){
+					if ($var["VariableCustomAction"] === $ActionScriptID){
 						$this->SendDebug("RestoreActionScript", $var);
 						// IPS_SetVariableCustomAction($ID,0);
 						// TODO: Restore old CustomAction
