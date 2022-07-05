@@ -90,6 +90,14 @@ declare(strict_types=1);
 					foreach($arr as $key1) {
 						$objID = $key1["InstanceID"];
 						if ($objID > 0){
+							$this->RegisterMessage($objID, OM_CHILDADDED);
+							$this->RegisterMessage($objID, OM_CHILDREMOVED);
+							$this->RegisterMessage($objID, OM_UNREGISTER);
+							$this->RegisterMessage($objID, OM_UNREGISTER);
+							$this->RegisterMessage($objID, IM_DELETE);
+							$this->RegisterMessage($objID, VM_CREATE);
+							$this->RegisterMessage($objID, VM_DELETE);
+													
 							$this->UpdateVariablesRecursive([$objID]);
 						}
 					}
