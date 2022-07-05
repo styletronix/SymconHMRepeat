@@ -219,16 +219,16 @@ declare(strict_types=1);
 		public function RequestExternalAction($Variable, $Value) {
 			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
-				$this->SendDebug("RequestExternalAction", "Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", 0);
-				$this->LogMessage("Für Variable " . $ID . " konnte keine Einstellung gefunden werden.", KL_WARNING);
+				$this->SendDebug("RequestExternalAction", "Für Variable " . $Variable . " konnte keine Einstellung gefunden werden.", 0);
+				$this->LogMessage("Für Variable " . $Variable . " konnte keine Einstellung gefunden werden.", KL_WARNING);
 				return false;
 			}
 
 			$Object = IPS_GetObject($Variable);
 
 			if ($Object['ObjectType'] !== 2){
-				$this->SendDebug("RequestExternalAction", "Objekt ID " . $ID . " ist keine Variable", 0);
-				$this->LogMessage("Objekt ID " . $ID . " ist keine Variable", KL_WARNING);
+				$this->SendDebug("RequestExternalAction", "Objekt ID " . $Variable . " ist keine Variable", 0);
+				$this->LogMessage("Objekt ID " . $Variable . " ist keine Variable", KL_WARNING);
 				return false;
 			}
 
@@ -236,8 +236,8 @@ declare(strict_types=1);
 
 			if ($prop["UpdateOnChangeOnly"] === true){
 				if ($Value == GetValue($Variable) or ($Value == $StatusItem["Value"] and $prop["DoNotUpdateWhileRetrying"] ?? true)){
-					$this->SendDebug("RequestExternalAction", "Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", 0);
-					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
+					$this->SendDebug("RequestExternalAction", "Variable " . $Variable . " ist unverändert und wird deshalb nicht aktualisiert.", 0);
+					$this->LogMessage("Variable " . $Variable . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
 				}
 			}
