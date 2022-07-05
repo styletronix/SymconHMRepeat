@@ -60,8 +60,11 @@ declare(strict_types=1);
 					case OM_CHILDADDED:
 					case VM_CREATE:
 					case IM_CREATE:
-						$this->UpdateVariablesRecursive([$SenderID]);
-
+						if ($this->GetRepeatingVariableTreeUp($SenderID)){
+							$this->SendDebug("MessageSink", "UpdateVariablesRecursive für " .$SenderID, 0);
+							$this->UpdateVariablesRecursive([$SenderID]);
+						}
+						
 						break;
 					case OM_CHILDREMOVED:
 					case OM_UNREGISTER:
@@ -88,7 +91,7 @@ declare(strict_types=1);
 			return array();
 		}
 		private function SetRepeatingStatus($data){
-			$this->SendDebug("SetRepeatingStatus", $data, 0);
+			$this->SendDebug("SetRepeatingStatus", json_encode($data), 0);
 
 			$jsonString = json_encode($data);
 			$this->WriteAttributeString("repeatingStatus", $jsonString);
@@ -290,7 +293,7 @@ declare(strict_types=1);
 		public function RequestExternalActionString(int $Variable, string $Value) {
 			$this->RequestExternalAction($Variable, $Value);
 		}
-		public function RequestExternalAction($Variable, $Value) {
+		public function RequestExternalAction(int $Variable, var $Value) {
 			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
 				$this->SendDebug("RequestExternalAction", "Für Variable " . $Variable . " konnte keine Einstellung gefunden werden.", 0);
