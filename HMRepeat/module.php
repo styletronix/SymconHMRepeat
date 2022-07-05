@@ -11,23 +11,29 @@ declare(strict_types=1);
 
 				$this->RegisterAttributeString("repeatingStatus", "[]");
 
-				$this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
-				$this->RegisterScript("ActionScriptBoolean","Externer ActionScript Boolean", "<?\n\nSXHMREP_RequestExternalActionBoolean(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
-				$this->RegisterScript("ActionScriptFloat","Externer ActionScript Float", "<?\n\nSXHMREP_RequestExternalActionFloat(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
-				$this->RegisterScript("ActionScriptInteger","Externer ActionScript Integer", "<?\n\nSXHMREP_RequestExternalActionInteger(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
-				$this->RegisterScript("ActionScriptString","Externer ActionScript String", "<?\n\nSXHMREP_RequestExternalActionString(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+				$this->SetBuffer("ActionScriptID",$this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);"));
+				$this->SetBuffer("ActionScriptBooleanID",$this->RegisterScript("ActionScriptBoolean","Externer ActionScript Boolean", "<?\n\nSXHMREP_RequestExternalActionBoolean(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);"));
+				$this->SetBuffer("ActionScriptFloatID",$this->RegisterScript("ActionScriptFloat","Externer ActionScript Float", "<?\n\nSXHMREP_RequestExternalActionFloat(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);"));
+				$this->SetBuffer("ActionScriptIntegerID",$this->RegisterScript("ActionScriptInteger","Externer ActionScript Integer", "<?\n\nSXHMREP_RequestExternalActionInteger(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);"));
+				$this->SetBuffer("ActionScriptStringID",$this->RegisterScript("ActionScriptString","Externer ActionScript String", "<?\n\nSXHMREP_RequestExternalActionString(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);"));
 
 				$this->RegisterTimer("UpdateIterval",5,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdateIterval");');	
+
+
+				$this->RegisterMessage($this->InstanceID, OM_CHILDREMOVED);
+				$this->RegisterMessage($this->InstanceID, OM_UNREGISTER);
+				$this->RegisterMessage($this->InstanceID, IM_DELETE);
+				$this->RegisterMessage($this->InstanceID, VM_DELETE);
 			}
 
 		public function Destroy()
 			{
 				$ScriptIDs = array(
-					$this->GetIDForIdent("ActionScriptBoolean"),
-					$this->GetIDForIdent("ActionScriptInteger"),
-					$this->GetIDForIdent("ActionScriptFloat"),
-					$this->GetIDForIdent("ActionScriptString"),
-					$this->GetIDForIdent("ActionScript")
+					$this->GetBuffer("ActionScriptID"),
+					$this->GetBuffer("ActionScriptBooleanID"),
+					$this->GetBuffer("ActionScriptFloatID"),
+					$this->GetBuffer("ActionScriptIntegerID"),
+					$this->GetBuffer("ActionScriptStringID")
 				);
 
 				$IDs = IPS_GetVariableList();
@@ -64,7 +70,9 @@ declare(strict_types=1);
 					case OM_UNREGISTER:
 					case VM_DELETE:
 					case IM_DELETE:
-
+						if($SenderID == $this->InstanceID){
+							$this->SendDebug("MessageSink", $_IPS['SELF'], 0);
+						}
 						break;
 				}
 			}
