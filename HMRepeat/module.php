@@ -22,6 +22,23 @@ declare(strict_types=1);
 
 		public function Destroy()
 			{
+				$ScriptIDs = array(
+					$this->GetIDForIdent("ActionScriptBoolean"),
+					$this->GetIDForIdent("ActionScriptInteger"),
+					$this->GetIDForIdent("ActionScriptFloat"),
+					$this->GetIDForIdent("ActionScriptString"),
+					$this->GetIDForIdent("ActionScript")
+				)
+
+				$IDs = IPS_GetVariableList();
+				foreach($IDs as $ID) {
+					$var = IPS_GetVariable($ID);
+					if (in_array($var["VariableCustomAction"], $ScriptIDs)){
+						IPS_SetVariableCustomAction($ID,0);
+						// TODO: Restore old CustomAction
+					}
+				}
+				
 				parent::Destroy();
 			}
 
@@ -171,6 +188,7 @@ declare(strict_types=1);
 			}		
 
 			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $ActionScriptID) { 
+				// TODO: Store CustomAction ID and use that for execution
 				$this->SendDebug("UpdateVariable", "Variable " . $ID . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", 0);
 				return; 
 			}
@@ -241,7 +259,6 @@ declare(strict_types=1);
 			}
 		}
 
-
 		public function RequestAction($Ident, $Value) {
 			switch($Ident) {
 				case "TestVariable":
@@ -257,6 +274,7 @@ declare(strict_types=1);
 					throw new Exception("Invalid Ident");
 			}
 		}
+
 		public function RequestExternalActionBoolean(int $Variable, bool $Value) {
 			$this->RequestExternalAction($Variable, $Value);
 		}
