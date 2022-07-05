@@ -164,7 +164,7 @@ declare(strict_types=1);
 		}
 
 		private function GetRepeatingStatusItem($id){
-			$status = $this->GetRepeatingStatus()
+			$status = $this->GetRepeatingStatus();
 			$item = $status["ID" . $id];
 
 			if ($item === null){
