@@ -12,7 +12,11 @@ declare(strict_types=1);
 				$this->RegisterAttributeString("repeatingStatus", "[]");
 
 				$this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
-		
+				$this->RegisterScript("ActionScriptBoolean","Externer ActionScript Boolean", "<?\n\nSXHMREP_RequestExternalActionBoolean(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+				$this->RegisterScript("ActionScriptFloat","Externer ActionScript Float", "<?\n\nSXHMREP_RequestExternalActionFloat(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+				$this->RegisterScript("ActionScriptInteger","Externer ActionScript Integer", "<?\n\nSXHMREP_RequestExternalActionInteger(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+				$this->RegisterScript("ActionScriptString","Externer ActionScript String", "<?\n\nSXHMREP_RequestExternalActionString(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+
 				$this->RegisterTimer("UpdateIterval",5,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdateIterval");');	
 			}
 
@@ -31,6 +35,21 @@ declare(strict_types=1);
 		public function MessageSink($TimeStamp, $SenderID, $Message, $Data) 
 			{
 				$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true), 0);
+
+				switch($Message){
+					case OM_CHILDADDED:
+					case VM_CREATE:
+					case IM_CREATE:
+						$this->UpdateVariablesRecursive([$SenderID]);
+
+						break;
+					case OM_CHILDREMOVED:
+					case OM_UNREGISTER:
+					case VM_DELETE:
+					case IM_DELETE:
+
+						break;
+				}
 			}
 
 		private function GetListItems($List){
@@ -93,7 +112,7 @@ declare(strict_types=1);
 							$this->RegisterMessage($objID, OM_CHILDADDED);
 							$this->RegisterMessage($objID, OM_CHILDREMOVED);
 							$this->RegisterMessage($objID, OM_UNREGISTER);
-							$this->RegisterMessage($objID, OM_UNREGISTER);
+							$this->RegisterMessage($objID, IM_CREATE);
 							$this->RegisterMessage($objID, IM_DELETE);
 							$this->RegisterMessage($objID, VM_CREATE);
 							$this->RegisterMessage($objID, VM_DELETE);
@@ -134,7 +153,22 @@ declare(strict_types=1);
 				return; 
 			}
 
-			$ActionScriptID = $this->GetIDForIdent("ActionScript");
+			switch($Variable["VariableType"]){
+				case 0:
+					$ActionScriptID = $this->GetIDForIdent("ActionScriptBoolean");
+					break;
+				case 1:
+					$ActionScriptID = $this->GetIDForIdent("ActionScriptInteger");
+					break;
+				case 2:
+					$ActionScriptID = $this->GetIDForIdent("ActionScriptFloat");
+					break;
+				case 3:
+					$ActionScriptID = $this->GetIDForIdent("ActionScriptString");
+					break;
+				default:
+					$ActionScriptID = $this->GetIDForIdent("ActionScript");
+			}		
 
 			if ($Variable["VariableCustomAction"] > 0 and $Variable["VariableCustomAction"] !== $ActionScriptID) { 
 				$this->SendDebug("UpdateVariable", "Variable " . $ID . " hat eine benutzerdefinierte Aktion und kann daher nicht verwendet werden.", 0);
@@ -223,7 +257,18 @@ declare(strict_types=1);
 					throw new Exception("Invalid Ident");
 			}
 		}
-
+		public function RequestExternalActionBoolean(int $Variable, bool $Value) {
+			$this->RequestExternalAction($Variable, $Value);
+		}
+		public function RequestExternalActionInteger(int $Variable, int $Value) {
+			$this->RequestExternalAction($Variable, $Value);
+		}
+		public function RequestExternalActionFloat(int $Variable, float $Value) {
+			$this->RequestExternalAction($Variable, $Value);
+		}
+		public function RequestExternalActionString(int $Variable, string $Value) {
+			$this->RequestExternalAction($Variable, $Value);
+		}
 		public function RequestExternalAction($Variable, $Value) {
 			$prop = $this->GetRepeatingVariableTreeUp($Variable);
 			if ($prop == null){
