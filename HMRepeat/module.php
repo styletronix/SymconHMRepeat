@@ -28,7 +28,7 @@ declare(strict_types=1);
 					$this->GetIDForIdent("ActionScriptFloat"),
 					$this->GetIDForIdent("ActionScriptString"),
 					$this->GetIDForIdent("ActionScript")
-				)
+				);
 
 				$IDs = IPS_GetVariableList();
 				foreach($IDs as $ID) {
