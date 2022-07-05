@@ -21,15 +21,26 @@
           "name": "UpdateOnChangeOnly",
           "width": "150px",
           "add": true,
-          "visible":  false,
+          "visible": false,
           "edit": {
             "caption": "Update if changed only",
+            "type": "CheckBox"
+          }
+        },
+        {
+          "caption": "Do not update while retrying",
+          "name": "DoNotUpdateWhileRetrying",
+          "width": "150px",
+          "add": true,
+          "visible": false,
+          "edit": {
+            "caption": "Do not update while retrying",
             "type": "CheckBox"
           }
         }
       ]
     }
   ],
-    "actions": [],
-    "status": []
+  "actions": [],
+  "status": []
 }

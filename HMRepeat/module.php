@@ -9,7 +9,11 @@ declare(strict_types=1);
 
 				$this->RegisterPropertyString("repeatingVariables", "");
 
+				$this->RegisterAttributeString("repeatingStatus", "[]");
+
 				$this->RegisterScript("ActionScript","Externer ActionScript", "<?\n\nSXHMREP_RequestExternalAction(IPS_GetParent(\$_IPS['SELF']), \$_IPS['VARIABLE'], \$_IPS['VALUE']);");
+		
+				$this->RegisterTimer("UpdateIterval",5,'IPS_RequestAction($_IPS["TARGET"], "TimerCallback", "UpdateIterval");');	
 			}
 
 		public function Destroy()
@@ -29,33 +33,29 @@ declare(strict_types=1);
 				$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true), 0);
 			}
 
-		public function ForwardData($JSONString)
-			{
-				$data = json_decode($JSONString);
-				IPS_LogMessage('Splitter FRWD', utf8_decode($data->Buffer));
-
-				$this->SendDataToParent(json_encode(['DataID' => '{75B6B237-A7B0-46B9-BBCE-8DF0CFE6FA52}', 'Buffer' => $data->Buffer]));
-
-				return 'String data for device instance!';
-			}
-
-		public function ReceiveData($JSONString)
-			{
-				$data = json_decode($JSONString);
-				IPS_LogMessage('Splitter RECV', utf8_decode($data->Buffer));
-
-				$this->SendDataToChildren(json_encode(['DataID' => '{98FEC99D-6AD9-4598-8F50-2976DA0A32C8}', 'Buffer' => $data->Buffer]));
-			}
-
 		private function GetListItems($List){
-				$arrString = $this->ReadPropertyString($List);
-				if ($arrString){
-					$arr = json_decode($arrString, true);
-				
-					return $arr;
-				}	
-				return null;
+			$arrString = $this->ReadPropertyString($List);
+			if ($arrString){
+				return json_decode($arrString, true);
+			}	
+			return null;
 		}
+
+		private function GetRepeatingStatus(){
+			$arrString = $this->ReadAttributeString("repeatingStatus");
+			if ($arrString){
+				return json_decode($arrString, true);
+			}	
+			return array();
+		}
+		private function SetRepeatingStatus($data){
+			$this->SendDebug("SetRepeatingStatus", $data);
+
+			$jsonString = json_encode($data);
+			$this->WriteAttributeString("repeatingStatus", $jsonString);
+		}
+
+
 		private function GetRepeatingVariable($objID){
 			$arr = $this->GetListItems("repeatingVariables");
 			if ($arr){
@@ -144,10 +144,69 @@ declare(strict_types=1);
 			// $ReferenceList = $this->GetReferenceList();
 		}
 
+		private function TimerCallback($timer){
+			switch($timer) {
+				case "UpdateIterval":
+					$this->UpdateIterval();
+					break;
+
+				default:
+					throw new Exception("Invalid TimerCallback");
+			}
+		}
+
+		private function UpdateIterval(){
+			$status = $this->GetRepeatingStatus()
+			foreach($status as $item) {
+
+			
+			}
+		}
+
+		private function GetRepeatingStatusItem($id){
+			$status = $this->GetRepeatingStatus()
+			$item = $status["ID" . $id];
+
+			if ($item === null){
+				$item = array(
+					"ID" => $id,
+					"RepeatCount" => 0,
+					"LastTry" => 0,
+					"Value" => null
+				);
+			}
+
+			return $item;
+		}
+
+		private function AddOrUpdateFailure($item){
+			$this->SendDebug("AddOrUpdateFailure", $item);
+
+			$status = $this->GetRepeatingStatus();
+			$status[ "ID" . $item["ID"]] = $item;
+			$this->SetRepeatingStatus($status);
+		}
+		private function RemoveFailure($id){
+			$status = $this->GetRepeatingStatus();
+
+			if ($status[ "ID" . $id]){
+				$this->SendDebug("RemoveFailure", $id);
+
+				unset($status[ "ID" . $id]);
+				$this->SetRepeatingStatus($status);
+			}
+		}
+
+
 		public function RequestAction($Ident, $Value) {
 			switch($Ident) {
 				case "TestVariable":
-					SetValue($this->GetIDForIdent($Ident), $Value);
+					// SetValue($this->GetIDForIdent($Ident), $Value);
+					$this->SetValue($Ident, $Value);
+					break;
+
+				case "TimerCallback":
+					$this->TimerCallback($Value);
 					break;
 
 				default:
@@ -171,8 +230,10 @@ declare(strict_types=1);
 				return false;
 			}
 
+			$StatusItem = $this->GetRepeatingStatusItem($Variable);
+
 			if ($prop["UpdateOnChangeOnly"] === true){
-				if ($Value == GetValue($Variable)){
+				if ($Value == GetValue($Variable) or ($Value == $StatusItem["Value"] and $prop["DoNotUpdateWhileRetrying"]){
 					$this->SendDebug("RequestExternalAction", "Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", 0);
 					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
@@ -182,12 +243,20 @@ declare(strict_types=1);
 			$VariableObject = IPS_GetVariable($Variable);
 
 			try{
-				$result =  IPS_RequestAction($VariableObject['VariableAction'], $Object['ObjectIdent'], $Value);
+				$result = IPS_RequestAction($VariableObject['VariableAction'], $Object['ObjectIdent'], $Value);
 			} catch (Exception $e) {
 				$result = false;
+				$this->SendDebug("RequestExternalAction", $e);
 			}
 
-
+			if ($result){
+				$this->RemoveFailure($Variable);
+			}else{
+				$StatusItem["Value"] = $Value;
+				$StatusItem["RepeatCount"] += 1;
+				$StatusItem["LastTry"] = time();
+				$this->AddOrUpdateFailure($StatusItem);
+			}
 
 			return $result;
 		}
