@@ -235,7 +235,7 @@ declare(strict_types=1);
 			$StatusItem = $this->GetRepeatingStatusItem($Variable);
 
 			if ($prop["UpdateOnChangeOnly"] === true){
-				if ($Value == GetValue($Variable) or ($Value == $StatusItem["Value"] and $prop["DoNotUpdateWhileRetrying"])){
+				if ($Value == GetValue($Variable) or ($Value == $StatusItem["Value"] and $prop["DoNotUpdateWhileRetrying"] ?? true)){
 					$this->SendDebug("RequestExternalAction", "Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", 0);
 					$this->LogMessage("Variable " . $ID . " ist unverändert und wird deshalb nicht aktualisiert.", KL_DEBUG);
 					return true;
