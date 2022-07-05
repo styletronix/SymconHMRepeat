@@ -5,7 +5,8 @@
         "Repeat Variables": "Variablen zur Wiederholung",
         "Update if changed only": "Nur bei Änderung aktualisieren",
         "Object": "Objekt",
-        "Do not update while retrying":  "Während wiederholung nicht erneut aktualisieren"
+        "Do not update while retrying": "Während wiederholung nicht erneut aktualisieren",
+        "Restore Variable defaults": "Variablen auf Grundeinstellung zurücksetzen"
       }
     }
 }
