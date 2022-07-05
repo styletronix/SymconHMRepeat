@@ -28,35 +28,21 @@ declare(strict_types=1);
 
 		public function Destroy()
 			{
-				$ScriptIDs = array(
-					$this->GetBuffer("ActionScriptID"),
-					$this->GetBuffer("ActionScriptBooleanID"),
-					$this->GetBuffer("ActionScriptFloatID"),
-					$this->GetBuffer("ActionScriptIntegerID"),
-					$this->GetBuffer("ActionScriptStringID")
-				);
-
-				$IDs = IPS_GetVariableList();
-				foreach($IDs as $ID) {
-					$var = IPS_GetVariable($ID);
-					if (in_array($var["VariableCustomAction"], $ScriptIDs)){
-						IPS_SetVariableCustomAction($ID,0);
-						// TODO: Restore old CustomAction
-					}
-				}
-				
 				parent::Destroy();
 			}
 
 		public function RestoreActionScript($ActionScriptID){
-			$IDs = IPS_GetVariableList();
+			if ($ActionScriptID > 0){
+				$IDs = IPS_GetVariableList();
 				foreach($IDs as $ID) {
 					$var = IPS_GetVariable($ID);
 					if ($var["VariableCustomAction"] === $ActionScriptID)){
-						IPS_SetVariableCustomAction($ID,0);
+						$this->SendDebug("RestoreActionScript", $var);
+						// IPS_SetVariableCustomAction($ID,0);
 						// TODO: Restore old CustomAction
 					}
 				}
+			}
 		}
 		public function ApplyChanges()
 			{
